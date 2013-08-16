@@ -3,7 +3,9 @@ package de.psp24.alleinsgold;
 import java.util.Locale; 
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class Home extends FragmentActivity implements ActionBar.TabListener {
@@ -175,7 +180,20 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 										" müssen beim  Anlegen eines neuen Wettkampfes angegeben werden. Das bestimmt dann die nachfolgende" +
 										"Treffererfassung. Man sollte dabei jederzeit die Treffererfassung unterbrechen und später wieder " +
 										"aufnehmen können.");
-										
+					Button button = new Button(getActivity());
+					RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+					relativeParams.addRule(RelativeLayout.BELOW, R.id.section_label);
+					button.setLayoutParams(relativeParams);
+					button.setText(R.string.btn_test_shootResultsTable);
+					button.setOnClickListener( new View.OnClickListener() {						
+						@Override
+						public void onClick(View v) {
+							Activity activity = getActivity();
+							Intent intent = new Intent(activity, ShooterResultsTableActivity.class);
+							activity.startActivity(intent);
+						}
+					});
+					((RelativeLayout)rootView).addView(button);
 					break;
 				case 3:
 					tabTextView.setText("Hierhin kommt der Inhalt für den Statistik Tab: verschiedene Auswertungen über alle Wettkämpfe hinweg");

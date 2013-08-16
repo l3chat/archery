@@ -9,13 +9,19 @@
     <string name="title_activity_shooter_results_table">ShooterResultsTableActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="shooter_name">Shooter Name</string>
+    <string name="shooter_info">Informationen über den Schützen</string>
+    <string name="distance">Distanz</string>    
     <string name="arrows">Pfeile</string>
     <string name="arrow_1">1</string>
     <string name="arrow_2">2</string>
-    <string name="arrow_3">3</string>
+    <string name="arrow_3">3</string>    
     <string name="passe_sum">Summe</string>
     <string name="passe_carry">Übertrag</string>
-    
+    <string name="shooter_total">Gesamtsumme</string>
+    <string name="placeholder0">0</string>
+    <string name="placeholder1">1</string>
+    <string name="placeholder_dist">30m</string>
+    <string name="btn_test_shootResultsTable">Schießzettel testen</string>
     
 
 </resources>
