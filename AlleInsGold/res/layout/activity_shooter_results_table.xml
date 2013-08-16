@@ -1,0 +1,148 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ShooterResultsTableActivity" >
+
+    <TextView
+        android:id="@+id/shooter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shooter_name" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+    <TableLayout
+        android:id="@+id/shooting_result_table"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/shooter_name"
+        android:layout_below="@+id/shooter_name"
+        android:layout_marginTop="10dp"
+        android:showDividers="end" >
+
+        <TableRow
+            android:id="@+id/tableRow_result_table_header_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"            
+            android:weightSum="13" >
+
+            <TextView
+                android:layout_weight="1"
+                android:text=""
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_span="3"
+                android:layout_weight="2"
+                android:text="@string/arrows"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_span="2"
+                android:layout_weight="2"
+                android:text=""
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView                
+                android:layout_weight="2"
+                android:text=""
+                android:textAppearance="@style/textAppearanceTiny" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow_result_table_header_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"            
+            android:weightSum="13" >
+
+            <TextView
+                android:layout_weight="1"              
+                android:text=""
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_weight="2"                
+                android:text="@string/arrow_1"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_weight="2"
+                android:text="@string/arrow_2"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView                
+                android:layout_weight="2"                
+                android:text="@string/arrow_3"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_span="2"
+                android:text="@string/passe_sum"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView
+                android:layout_weight="2"                
+                android:text="@string/passe_carry"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow_standard_passe_row"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:weightSum="13"
+             >
+            
+            <TextView
+                android:layout_weight="1"
+                android:text="1"
+                android:textAppearance="@style/textAppearanceTiny" />
+
+            <TextView                
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView                
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+            <TextView
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:layout_weight="2"                
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+            
+        </TableRow>
+
+       
+    </TableLayout>
+
+</RelativeLayout>
