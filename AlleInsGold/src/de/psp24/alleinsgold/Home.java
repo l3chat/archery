@@ -1,6 +1,6 @@
 package de.psp24.alleinsgold;
 
-import java.util.Locale; 
+import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -20,6 +20,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import de.psp24.alleinsgold.data.SchemaHelper;
 
 public class Home extends FragmentActivity implements ActionBar.TabListener {
 
@@ -42,6 +43,10 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+		
+		// create initial database content
+		SchemaHelper sh = new SchemaHelper(this);
+		sh.createMockData();
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
