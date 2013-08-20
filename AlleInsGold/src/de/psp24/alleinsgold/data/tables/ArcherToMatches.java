@@ -2,7 +2,7 @@ package de.psp24.alleinsgold.data.tables;
 
 public class ArcherToMatches {
 	
-	public static final String TABLE_NAME = "archer_to_matches_table";
+	public static final String TABLE_NAME = "assignments";
 	
 	// define the columns
 	public static final String ID = "_id"; // must look like this

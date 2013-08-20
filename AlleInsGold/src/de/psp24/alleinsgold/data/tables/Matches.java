@@ -3,7 +3,7 @@ package de.psp24.alleinsgold.data.tables;
 public class Matches {
 
 	
-	public static final String TABLE_NAME = "match_table";
+	public static final String TABLE_NAME = "matches";
 	
 	// define the columns
 	public static final String ID = "_id"; // must look like this

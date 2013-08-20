@@ -2,7 +2,7 @@ package de.psp24.alleinsgold.data.tables;
 
 public class Passes {
 	
-	public static final String TABLE_NAME = "passe_table";
+	public static final String TABLE_NAME = "passes";
 	
 	// define the columns
 	public static final String ID = "_id"; // must look like this

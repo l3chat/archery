@@ -1,9 +1,13 @@
 package de.psp24.alleinsgold.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -42,7 +46,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		// create rounds table
 		db.execSQL("CREATE TABLE " + Rounds.TABLE_NAME + " ("
 				+ Rounds.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-				+ Rounds.P_MATCH_id + " INTEGER, " // parent match id
+				+ Rounds.P_MATCH_ID + " INTEGER, " // parent match id
 				+ Rounds.NUMBER + " INTEGER);" // round number
 				);
 		
@@ -59,7 +63,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ Arrows.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 				+ Arrows.P_PASSE_ID + " INTEGER, " // parent pass id
 				+ Arrows.NUMBER + " INTEGER, " // arrow number
-				+ Arrows.SCORE + " TEXT);" // arrow score: can be "X" (eye), so not an integer
+				+ Arrows.SCORE + " TEXT, " // arrow score: can be "X" (eye), so not an integer
+				+ Arrows.MATCH_ID + " INTEGER);" // reference to the parent match
 				);
 		
 		// create archers table
@@ -115,7 +120,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	}
 
 	
-	public long addMatch(Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+	private long addMatch(Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
 		ContentValues cv = new ContentValues();
 		cv.put(Matches.DATE, datetime.getTimeInMillis() / 1000); // need seconds, not milliseconds
 		cv.put(Matches.DISTANCE, distance);
@@ -136,7 +141,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	 * 
 	 * Returns true if successfully assigned.
 	 */
-	public boolean assignArcher(int archerId, int matchId){
+	private boolean assignArcher(int archerId, int matchId){
 		ContentValues cv = new ContentValues();
 		cv.put(ArcherToMatches.ARCHER_ID, archerId);
 		cv.put(ArcherToMatches.MATCH_ID, matchId);
@@ -148,9 +153,9 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	}
 	
 	
-	public long addRound(int matchId, int roundNumber){
+	private long addRound(int matchId, int roundNumber){
 		ContentValues cv = new ContentValues();
-		cv.put(Rounds.P_MATCH_id, matchId);
+		cv.put(Rounds.P_MATCH_ID, matchId);
 		cv.put(Rounds.NUMBER, roundNumber);
 
 		SQLiteDatabase sd = getWritableDatabase();
@@ -161,7 +166,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	
 	
 	
-	public long addPass(int pArcherId, int pRoundId, int passN){
+	private long addPass(int pArcherId, int pRoundId, int passN){
 		ContentValues cv = new ContentValues();
 		cv.put(Passes.P_ARCHER_ID, pArcherId);
 		cv.put(Passes.P_ROUND_ID, pRoundId);
@@ -175,11 +180,12 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	
 	
 
-	public long addArrow(int passId, int arrowN, String arrowScore){
+	private long addArrow(int passId, int arrowN, String arrowScore, int matchId){
 		ContentValues cv = new ContentValues();
 		cv.put(Arrows.P_PASSE_ID, passId);
 		cv.put(Arrows.NUMBER, arrowN);
 		cv.put(Arrows.SCORE, arrowScore);
+		cv.put(Arrows.MATCH_ID, matchId);
 
 		SQLiteDatabase sd = getWritableDatabase();
 		
@@ -198,39 +204,261 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		int nRounds = 1;
 		int nPasses = 12;
 		int nArrows = 3;
-		long matchId = addMatch(Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
 		
 		// create archers
-		long a1 = addArcher("Bill", "Gates");
-		long a2 = addArcher("Peter", "Higgs");
-		long a3 = addArcher("Master", "Yoda");
+		ArrayList<Long> archers = new ArrayList<Long>();
+		archers.add(addArcher("Bill", "Gates"));
+		archers.add(addArcher("Peter", "Higgs"));
+		archers.add(addArcher("Master", "Yoda"));
+
+		long matchId = createEmptyMatch(archers, Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
 		
-		// assign archers
-		assignArcher((int) a1, (int) matchId);
-		assignArcher((int) a2, (int) matchId);
-		assignArcher((int) a3, (int) matchId);
-		
-		// create rounds
-		long r, p1, p2, p3, ar1, ar2, ar3;
-		for(int i=0; i<nRounds; i++){
-			r = addRound((int)matchId, i+1);
-			
-			// create passes
-			for(int j=0; j<nPasses; j++){
-				p1 = addPass((int) a1, (int) r, j+1);
-				p2 = addPass((int) a2, (int) r, j+1);
-				p3 = addPass((int) a3, (int) r, j+1);
+		return matchId;
+	}
+	
+
+	//TODO make it transactional!!!!!
+	public long createEmptyMatch(ArrayList<Long> archers, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+		long matchId = addMatch(Calendar.getInstance(), distance, n_rounds, n_passes, n_arrows);
+
+		long roundId, passeId;
+		for(int i=0; i<n_rounds; i++){
+			// create round
+			roundId = addRound((int)matchId, i+1);
 				
-				// create arrows
-				for(int k=0; k<nArrows; k++){
-					ar1 = addArrow((int)p1, k+1, Integer.toString((int)Math.floor(Math.random()*11)));
-					ar2 = addArrow((int)p2, k+1, Integer.toString((int)Math.floor(Math.random()*11)));
-					ar3 = addArrow((int)p3, k+1, "X"); // Master Yoda
+			for(long archerId : archers){
+				// assign archer
+				assignArcher((int) archerId, (int) matchId);
+
+				// create passes
+				for(int j=0; j<n_passes; j++){
+					passeId = addPass((int) archerId, (int) roundId, j+1);
+					
+					// create arrows
+					for(int k=0; k<n_arrows; k++){
+						addArrow((int)passeId, k+1, "0", (int) matchId); // returned arrowId is not used here
+					}
 				}
 			}
 		}
-		
+
 		return matchId;
+	}
+	
+	
+//	public Long[] getAllArrowIds(long archerId, long matchId){
+//		ArrayList<Long> arrows = new ArrayList<Long>();
+//		return arrows.toArray(new Long[]{});
+//	}
+	
+	
+	public Cursor getArrows(long passeId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Arrows.ID, Arrows.NUMBER, Arrows.SCORE};
+		String[] selectionArgs = new String[]{String.valueOf(passeId)};
+		Cursor c = sd.query(Arrows.TABLE_NAME, cols, Arrows.P_PASSE_ID + " = ?",
+				selectionArgs, null, null, Arrows.NUMBER);
+		
+		return c;
+	}
+	
+	
+	public Cursor getPasses(long roundId, long archerId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Passes.ID, Passes.NUMBER};
+		String[] selectionArgs = new String[]{String.valueOf(archerId), String.valueOf(roundId)};
+		Cursor c = sd.query(Passes.TABLE_NAME, cols, Passes.P_ARCHER_ID + " = ?"
+				+ " AND " + Passes.P_ROUND_ID + " = ?",
+				selectionArgs, null, null, Passes.NUMBER);
+		
+		return c;
+	}
+	
+	
+	public Cursor getRounds(long matchId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Rounds.ID, Rounds.NUMBER};
+		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		Cursor c = sd.query(Rounds.TABLE_NAME, cols, Rounds.P_MATCH_ID + " = ?",
+				selectionArgs, null, null, Rounds.NUMBER);
+		
+		return c;
+	}
+	
+	
+	public Cursor getMatches(){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,
+				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
+		Cursor c = sd.query(Rounds.TABLE_NAME, cols, null,
+				null, null, null, Matches.DATE);
+		
+		return c;
+	}
+	
+	
+	public boolean removeMatch(int matchId){
+		Set<Integer> roundIds = getRoundIds(matchId);
+		Set<Integer> archerIds = getArcherIds(matchId);
+		
+		boolean resultOk = true;
+		for(int roundId : roundIds){
+			resultOk &= removeRound(roundId);
+		}
+		
+		resultOk &= removeArcherAssignments(matchId);
+		
+		if(resultOk){
+			SQLiteDatabase sd = getWritableDatabase();
+			String[] whereArgs = new String[]{String.valueOf(matchId)};
+			int result = sd.delete(Matches.TABLE_NAME, Matches.ID + " = ?", whereArgs);
+			resultOk &= (result > 0);
+		}
+		
+		return resultOk;
+	}
+	
+	
+	private boolean removeRound(int roundId){
+		Set<Integer> passesIds = getPasseIds(roundId);
+		
+		boolean resultOk = true;
+		for(int passeId : passesIds){
+			resultOk &= removePasse(passeId);
+		}
+		
+		if(resultOk){
+			SQLiteDatabase sd = getWritableDatabase();
+			String[] whereArgs = new String[]{String.valueOf(roundId)};
+			int result = sd.delete(Rounds.TABLE_NAME, Rounds.ID + " = ?", whereArgs);
+			resultOk &= (result > 0);
+		}
+		
+		return resultOk;
+	}
+	
+	
+	private boolean removeArcherAssignments(int matchId){
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] whereArgs = new String[]{String.valueOf(matchId)};
+		int result = sd.delete(ArcherToMatches.TABLE_NAME, ArcherToMatches.MATCH_ID + " = ?", whereArgs);
+		return (result > 0);
+	}
+	
+	
+	private boolean removePasse(int passeId){
+		Set<Integer> arrowIds = getArrowIds(passeId);
+		
+		boolean resultOk = true;
+		for(int arrowId : arrowIds){
+			resultOk &= removeArrow(arrowId);
+		}
+		
+		if(resultOk){
+			SQLiteDatabase sd = getWritableDatabase();
+			String[] whereArgs = new String[]{String.valueOf(passeId)};
+			int result = sd.delete(Passes.TABLE_NAME, Passes.ID + " = ?", whereArgs);
+			resultOk &= (result > 0);
+		}
+		
+		return resultOk;
+	}
+	
+	
+	private boolean removeArrow(int arrowId){
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] whereArgs = new String[]{String.valueOf(arrowId)};
+		int result = sd.delete(Arrows.TABLE_NAME, Arrows.ID + " = ?", whereArgs);
+		
+		return (result > 0);
+	}
+	
+	
+	public Set<Integer> getArcherIds(int matchId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{ArcherToMatches.ARCHER_ID};
+		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		Cursor c = sd.query(ArcherToMatches.TABLE_NAME, cols, ArcherToMatches.MATCH_ID + 
+				" = ?", selectionArgs, null, null, null);
+		
+		Set<Integer> archerIds = new HashSet<Integer>();
+		while(c.moveToNext()){
+			int id = c.getInt(c.getColumnIndex(ArcherToMatches.ARCHER_ID));
+			archerIds.add(id);
+		}
+		
+		c.close();
+		
+		return archerIds;
+	}
+	
+	
+	public Set<Integer> getRoundIds(int matchId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Rounds.ID};
+		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		Cursor c = sd.query(Rounds.TABLE_NAME, cols, Rounds.P_MATCH_ID + 
+				" = ?", selectionArgs, null, null, null);
+		
+		Set<Integer> archerIds = new HashSet<Integer>();
+		while(c.moveToNext()){
+			int id = c.getInt(c.getColumnIndex(Rounds.ID));
+			archerIds.add(id);
+		}
+		
+		c.close();
+		
+		return archerIds;
+	}
+
+	
+	public Set<Integer> getPasseIds(int roundId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Passes.ID};
+		Set<Integer> passeIds = new HashSet<Integer>();
+		
+		String[] selectionArgs = new String[]{String.valueOf(roundId)};
+		Cursor c = sd.query(Passes.TABLE_NAME, cols, 
+				Passes.P_ROUND_ID + " = ?", 
+				selectionArgs, null, null, null);
+
+		while(c.moveToNext()){
+			int id = c.getInt(c.getColumnIndex(Passes.ID));
+			passeIds.add(id);
+		}
+		
+		c.close();
+		
+		return passeIds;
+	}
+	
+	
+	public Set<Integer> getArrowIds(int passeId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Arrows.ID};
+		Set<Integer> arrowIds = new HashSet<Integer>();
+		
+		String[] selectionArgs = new String[]{String.valueOf(passeId)};
+		Cursor c = sd.query(Arrows.TABLE_NAME, cols, 
+				Arrows.P_PASSE_ID + " = ?", 
+				selectionArgs, null, null, null);
+
+		while(c.moveToNext()){
+			int id = c.getInt(c.getColumnIndex(Arrows.ID));
+			arrowIds.add(id);
+		}
+		
+		c.close();
+		
+		return arrowIds;
 	}
 
 }

@@ -2,7 +2,7 @@ package de.psp24.alleinsgold.data.tables;
 
 public class Archers {
 	
-	public static final String TABLE_NAME = "archer_table";
+	public static final String TABLE_NAME = "archers";
 	
 	// define the columns
 	public static final String ID = "_id"; // must look like this
