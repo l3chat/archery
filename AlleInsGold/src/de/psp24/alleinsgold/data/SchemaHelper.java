@@ -319,6 +319,10 @@ public class SchemaHelper extends SQLiteOpenHelper {
 			resultOk &= (result > 0);
 		}
 		
+		if(resultOk){
+			resultOk &= removeArchers(archerIds);
+		}
+		
 		return resultOk;
 	}
 	
@@ -373,6 +377,25 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		SQLiteDatabase sd = getWritableDatabase();
 		String[] whereArgs = new String[]{String.valueOf(arrowId)};
 		int result = sd.delete(Arrows.TABLE_NAME, Arrows.ID + " = ?", whereArgs);
+		
+		return (result > 0);
+	}
+	
+	
+	private boolean removeArchers(Set<Integer> archerIds){
+		boolean result = true;
+		
+		for(int archerId : archerIds){
+			result &= removeArcher(archerId);
+		}
+		return result;
+	}
+	
+	
+	private boolean removeArcher(int archerId){
+		SQLiteDatabase sd = getWritableDatabase();
+		String[] whereArgs = new String[]{String.valueOf(archerId)};
+		int result = sd.delete(Archers.TABLE_NAME, Archers.ID + " = ?", whereArgs);
 		
 		return (result > 0);
 	}

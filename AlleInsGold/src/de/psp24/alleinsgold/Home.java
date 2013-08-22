@@ -49,7 +49,7 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 		long matchId = sh.createMockData();
 		
 		// remove initial database content
-		sh.removeMatch((int) matchId);
+//		sh.removeMatch((int) matchId);
 		
 
 		// Set up the action bar.
