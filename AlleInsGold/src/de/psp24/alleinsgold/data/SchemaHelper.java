@@ -484,11 +484,11 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	}
 	
 	
-	public Set<Integer> getArcherIds(int matchId){
+	public Set<Integer> getArcherIds(long mMatchId){
 		SQLiteDatabase sd = getReadableDatabase();
 		
 		String[] cols = new String[]{ArcherToMatches.ARCHER_ID};
-		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		String[] selectionArgs = new String[]{String.valueOf(mMatchId)};
 		Cursor c = sd.query(ArcherToMatches.TABLE_NAME, cols, ArcherToMatches.MATCH_ID + 
 				" = ?", selectionArgs, null, null, null);
 		
@@ -503,12 +503,52 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		return archerIds;
 	}
 	
+	public Cursor getArcher( long archerID ) {
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{ Archers.ID,
+									  Archers.FIRST_NAME,
+									  Archers.LAST_NAME };
+		String[] selectionArgs = new String[]{String.valueOf(archerID)};
+		Cursor c = sd.query(Archers.TABLE_NAME, cols, Archers.ID + " = ?",
+				selectionArgs, null, null, Matches.DATE);
+		
+		return c;
+	}
 	
-	public Set<Integer> getRoundIds(int matchId){
+	public int getScoreForArcherInRound( long archerId, long roundId )
+	{
+		int score = 0;
+		// Get all the Passes,
+		Cursor passeCursor = getPasses(roundId, archerId);
+		for (passeCursor.moveToFirst(); !passeCursor.isAfterLast(); passeCursor.moveToNext()) {
+		    int passeID = passeCursor.getInt(passeCursor.getColumnIndex(Passes.ID));
+		    Cursor arrowCursor = getArrows(passeID);
+		    for (arrowCursor.moveToFirst(); !arrowCursor.isAfterLast(); arrowCursor.moveToNext()) {
+		    	String arrowScore = arrowCursor.getString(arrowCursor.getColumnIndex(Arrows.SCORE));		    	
+		    	if( arrowScore.equals("X"))
+		    	{
+		    		score += 10;
+		    	}
+		    	else
+		    	{
+		    		score += Integer.parseInt(arrowScore);
+		    	}
+		    }   
+		    arrowCursor.close();
+		}
+		passeCursor.close();
+		// Return the aggregated Score
+		return score;
+				
+	}
+	
+	
+	public Set<Integer> getRoundIds(long mCurrentMatchId){
 		SQLiteDatabase sd = getReadableDatabase();
 		
 		String[] cols = new String[]{Rounds.ID};
-		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		String[] selectionArgs = new String[]{String.valueOf(mCurrentMatchId)};
 		Cursor c = sd.query(Rounds.TABLE_NAME, cols, Rounds.P_MATCH_ID + 
 				" = ?", selectionArgs, null, null, null);
 		

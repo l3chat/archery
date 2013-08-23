@@ -12,6 +12,7 @@
     <string name="shooter_info">Informationen über den Schützen</string>
     <string name="distance">Distanz</string>
     <string name="numer_of_rounds">Anzahl der Runden: </string>
+    <string name="round_number">Runde %d</string>
     <string name="arrows">Pfeile</string>
     <string name="arrow_1">1</string>
     <string name="arrow_2">2</string>
