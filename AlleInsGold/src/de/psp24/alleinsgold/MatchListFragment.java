@@ -1,5 +1,8 @@
 package de.psp24.alleinsgold;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,12 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.ViewBinder;
+import android.widget.TextView;
 import de.psp24.alleinsgold.data.GoldDataProvider;
 import de.psp24.alleinsgold.data.tables.Matches;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 
+/**
+ * Displays the list of all Matches 
+ * @author D054746
+ *
+ */
 public class MatchListFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
 	
@@ -50,6 +60,21 @@ public class MatchListFragment extends ListFragment implements
 				new int[] { android.R.id.text1, android.R.id.text2 },
 				// Flags
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		mAdapter.setViewBinder(new ViewBinder() {
+
+		    public boolean setViewValue(View aView, Cursor aCursor, int aColumnIndex) {
+		        if (aColumnIndex == 1) {
+		        		DateFormat df = DateFormat.getDateInstance();
+		                String dateString = df.format( new Date(aCursor.getLong(aColumnIndex)*1000) );		                
+		                TextView textView = (TextView) aView;
+		                textView.setText( dateString );
+		                return true;
+		         }
+
+		         return false;
+		    }
+		});
+		
 		setListAdapter(mAdapter);
 
 		// Prepare the loader. Either re-connect with an existing one,
