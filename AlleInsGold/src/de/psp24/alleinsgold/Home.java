@@ -34,6 +34,8 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
+	
+	private static boolean mockDataCreated = false;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -44,13 +46,17 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		
-		// create initial database content
-		SchemaHelper sh = new SchemaHelper(this);
-		long matchId = sh.createMockData();
-		
-		// remove initial database content
-//		sh.removeMatch((int) matchId);
+
+		if(!mockDataCreated){
+			// create initial database content
+			SchemaHelper sh = new SchemaHelper(this);
+			long matchId = sh.createMockData();
+			
+			mockDataCreated = true;
+			
+			// remove initial database content
+//			sh.removeMatch((int) matchId);
+		}
 		
 
 		// Set up the action bar.
