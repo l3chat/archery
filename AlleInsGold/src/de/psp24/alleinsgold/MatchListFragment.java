@@ -54,7 +54,7 @@ public class MatchListFragment extends ListFragment implements
 				// rows).
 				null, // Pass in the cursor to bind to.
 				// Array of cursor columns to bind to.
-				new String[] { Matches.ID, Matches.DATE },
+				new String[] { Matches.NAME, Matches.DATE },
 				// Parallel array of which template objects to bind to those
 				// columns.
 				new int[] { android.R.id.text1, android.R.id.text2 },

@@ -36,7 +36,7 @@ public class MatchHeaderFragment extends Fragment {
 		c.moveToFirst();
 		
 		TextView tv = (TextView)getView().findViewById(R.id.tv_matchName);
-		//tv.setText(c.getString(c.getColumnIndex(Matches.TABLE_NAME))); 
+		tv.setText(c.getString(c.getColumnIndex(Matches.NAME))); 
 		tv = (TextView)getView().findViewById(R.id.tv_matchDate);
 		DateFormat df = DateFormat.getDateInstance();
 		String dateString = df.format( new Date( c.getLong(c.getColumnIndexOrThrow(Matches.DATE))*1000 ));
