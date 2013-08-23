@@ -25,7 +25,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "archery_data.db";
 
 	// TOGGLE THIS NUMBER FOR UPDATING TABLES AND DATABASE
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +42,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ Matches.DISTANCE + " INTEGER, " 	// in meters
 				+ Matches.N_ROUNDS + " INTEGER, " 	// 1 or 2
 				+ Matches.N_PASSES + " INTEGER, " 	// 10 or 12
-				+ Matches.N_ARROWS + " INTEGER);" 	// 3 or 6
+				+ Matches.N_ARROWS + " INTEGER, " 	// 3 or 6
 				+ Matches.NAME + " TEXT);" 			// match name
 				);
 		
