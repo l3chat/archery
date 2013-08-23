@@ -9,18 +9,24 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TextView;
 import de.psp24.alleinsgold.data.GoldDataProvider;
+import de.psp24.alleinsgold.data.SchemaHelper;
 import de.psp24.alleinsgold.data.tables.Matches;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 
 /**
  * Displays the list of all Matches 
@@ -34,6 +40,7 @@ public class MatchListFragment extends ListFragment implements
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
+	private SchemaHelper schemaHelper;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +52,8 @@ public class MatchListFragment extends ListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+		schemaHelper = new SchemaHelper(getActivity());
 
 		mAdapter = new SimpleCursorAdapter(this.getActivity(), // Context.
 				android.R.layout.two_line_list_item, // Specify the row template
@@ -80,6 +89,9 @@ public class MatchListFragment extends ListFragment implements
 		// Prepare the loader. Either re-connect with an existing one,
 		// or start a new one.
 		getLoaderManager().initLoader(MATCHES_LOADER, null, (LoaderCallbacks<Cursor>) this);
+		
+		// create context menu for matches
+		registerForContextMenu(getListView());
 	}
 
 	@Override
@@ -118,5 +130,40 @@ public class MatchListFragment extends ListFragment implements
 		// longer using it.
 		mAdapter.swapCursor(null);
 	}
+	
+	
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	if (v.getId() == android.R.id.list) {
+    		menu.add(Menu.NONE, 0, 0, "remove match"); //TODO : load from resources, like below:
+//    		String[] menuItems = getResources().getStringArray(R.array.menu); 
+//    		for (int i = 0; i<menuItems.length; i++) {
+//    			menu.add(Menu.NONE, i, i, menuItems[i]);
+//			}
+    	}
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	boolean result = true;
+    	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+    	int menuItemIndex = item.getItemId();
+    	if(menuItemIndex == 0){
+    		Cursor c = (Cursor) mAdapter.getItem(info.position);
+    		long matchId = c.getLong(c.getColumnIndex(Matches.ID));
+    		
+    		//TODO: delete using GoldDataProvider!!!!
+    		// and call there inside delete() the following line:
+    		// getContext().getContentResolver().notifyChange(GoldDataProvider.MATCHES_CONTENT_URI, null);
+    		// this will update the list
+    		result = schemaHelper.removeMatch((int)matchId);
+    		
+    		// this doesn't update the list, see above
+    		// commented out
+//    		getActivity().getContentResolver().notifyChange(GoldDataProvider.MATCHES_CONTENT_URI, null);
+    	}
+    	return result;
+    }
+
 
 }
