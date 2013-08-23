@@ -9,13 +9,18 @@ import org.apache.http.message.BasicNameValuePair;
 
 import de.psp24.alleinsgold.data.SchemaHelper;
 import de.psp24.alleinsgold.data.tables.Archers;
+import de.psp24.alleinsgold.data.tables.Matches;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,6 +64,7 @@ public class RoundFragment extends Fragment {
 		archerScores = new ArrayList<RoundFragment.ArcherRoundScore>();
 		for( int archerId : archerIds ) {
 			Cursor archerCursor = schemaHelper.getArcher(archerId);
+			archerCursor.moveToFirst();
 			ArcherRoundScore ars = new ArcherRoundScore();
 			ars.archerId   = archerId;
 			ars.archerName = archerCursor.getString(archerCursor.getColumnIndex(Archers.FIRST_NAME)) + " " +
@@ -67,28 +73,25 @@ public class RoundFragment extends Fragment {
 			archerScores.add(ars);
 		}
 		 ArrayAdapter<ArcherRoundScore> adapter = new ArrayAdapter<ArcherRoundScore>(getActivity(),
-			        android.R.layout.simple_list_item_2, archerScores){
-			            @Override
-			            public View getView(int position, View convertView, ViewGroup parent){
-			                TwoLineListItem row;            
-			                if(convertView == null){
-			                    LayoutInflater inflater = (LayoutInflater)getActivity().getApplicationContext().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
-			                    row = (TwoLineListItem)inflater.inflate(android.R.layout.simple_list_item_2, null);                    
-			                }else{
-			                    row = (TwoLineListItem)convertView;
-			                }
-			                ArcherRoundScore data = archerScores.get(position);
-			                row.getText1().setText(data.archerName);
-			                row.getText2().setText(data.score);
-			     
-			                return row;
-			            }
-			        };;
-			    
+			        android.R.layout.simple_list_item_1, archerScores);
 		
 		 
 		ListView lv = (ListView)getView().findViewById(android.R.id.list);
 		lv.setAdapter(adapter);
+		lv.setOnItemClickListener( new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+				// TODO Auto-generated method stub
+				ArcherRoundScore ars = archerScores.get(position);
+				// Then start the Activity, passing the Match ID
+				Activity activity = getActivity();
+				Intent intent = new Intent(activity, ShooterResultsTableActivity.class);
+				//intent.putExtra(MatchDetailsActivity.MATCH_ID, matchId);
+				activity.startActivity(intent);
+			}
+		});
 		
 	}
 
@@ -106,7 +109,7 @@ public class RoundFragment extends Fragment {
 		public int    score;
 		
 		public String toString() {
-			return archerName;
+			return archerName + " ("+score+" Punkte)";
 		}
 	}
 }

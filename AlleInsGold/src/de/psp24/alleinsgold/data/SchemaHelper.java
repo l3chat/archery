@@ -511,7 +511,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 									  Archers.LAST_NAME };
 		String[] selectionArgs = new String[]{String.valueOf(archerID)};
 		Cursor c = sd.query(Archers.TABLE_NAME, cols, Archers.ID + " = ?",
-				selectionArgs, null, null, Matches.DATE);
+				selectionArgs, null, null, null);
 		
 		return c;
 	}
