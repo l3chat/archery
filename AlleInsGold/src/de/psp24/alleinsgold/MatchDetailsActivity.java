@@ -1,14 +1,19 @@
 package de.psp24.alleinsgold;
 
+import java.util.Currency;
+
+import de.psp24.alleinsgold.data.SchemaHelper;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 
-public class MatchDetailsActivity extends Activity {
+public class MatchDetailsActivity extends FragmentActivity {
 	
 	public final static String MATCH_ID = "de.psp24.alleinsgold.data.tables.Matches.id";
 	private long mCurrentMatchId = 0;
@@ -22,6 +27,9 @@ public class MatchDetailsActivity extends Activity {
 		
 		Intent intent = getIntent();
 		mCurrentMatchId = intent.getLongExtra(MATCH_ID,0);
+		
+		Cursor c = new SchemaHelper(this).getMatch(mCurrentMatchId);
+		
 		
 		TextView tv = (TextView)findViewById(R.id.txtview_match_id);
 		tv.setText("Selected Match: "+mCurrentMatchId);

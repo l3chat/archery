@@ -25,7 +25,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "archery_data.db";
 
 	// TOGGLE THIS NUMBER FOR UPDATING TABLES AND DATABASE
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	public SchemaHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,7 +43,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ Matches.N_ROUNDS + " INTEGER, " 	// 1 or 2
 				+ Matches.N_PASSES + " INTEGER, " 	// 10 or 12
 				+ Matches.N_ARROWS + " INTEGER, " 	// 3 or 6
-				+ Matches.NAME + " TEXT);" 			// match name
+				+ Matches.NAME     + " TEXT);" 		// match name
 				);
 		
 		// create rounds table
@@ -97,6 +97,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 		// CREATE NEW INSTANCE OF SCHEMA
 		onCreate(db);
+		
 	}
 	
 	private void dropTables(SQLiteDatabase db){
@@ -357,7 +358,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		SQLiteDatabase sd = getReadableDatabase();
 		
 		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,
-				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
+				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS, Matches.NAME};
 		Cursor c = sd.query(Matches.TABLE_NAME, cols, null,
 				null, null, null, Matches.DATE);
 		
@@ -374,7 +375,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		SQLiteDatabase sd = getReadableDatabase();
 		
 		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,
-				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
+				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS, Matches.NAME};
 		String[] selectionArgs = new String[]{String.valueOf(matchId)};
 		Cursor c = sd.query(Matches.TABLE_NAME, cols, Matches.ID + " = ?",
 				selectionArgs, null, null, Matches.DATE);

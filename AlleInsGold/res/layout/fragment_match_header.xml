@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/tv_matchName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Name of the Match"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <TextView
+        android:id="@+id/tv_distance_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="35dp"
+        android:text="@string/distance"
+        android:textAppearance="@android:style/TextAppearance.Small" />
+
+        <TextView
+            android:id="@+id/tv_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_distance_label"
+            android:text="@string/placeholder_dist"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/tv_matchDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tv_matchName"
+        android:layout_marginTop="10dp"
+        android:text="08.10.2013"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_numberOfRounds_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tv_matchDate"
+        android:layout_marginTop="3dp"
+        android:text="@string/numer_of_rounds"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_numberOfRounds_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_numberOfRounds_label"
+        android:layout_alignBottom="@+id/tv_numberOfRounds_label"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/tv_numberOfRounds_label"
+        android:text="@string/placeholder0"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
