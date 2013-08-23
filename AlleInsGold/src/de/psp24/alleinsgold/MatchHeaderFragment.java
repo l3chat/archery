@@ -30,7 +30,7 @@ public class MatchHeaderFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		Intent intent = getActivity().getIntent();
-		mCurrentMatchId = intent.getLongExtra(MatchDetailsActivity.MATCH_ID,0);
+		mCurrentMatchId = intent.getLongExtra(CommonConstants.MATCH_ID,0);
 		
 		Cursor c = new SchemaHelper(getActivity()).getMatch(mCurrentMatchId);
 		c.moveToFirst();

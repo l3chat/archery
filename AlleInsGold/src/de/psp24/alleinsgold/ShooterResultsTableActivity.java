@@ -5,116 +5,48 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+
 public class ShooterResultsTableActivity extends Activity {
 
+	private String mShooterName = "";
+	private int    mShooterId   = 0;
+	private int    mMatchId     = 0;
+	private int    mRoundNumber = 0;
+	private int    mRoundId     = 0;
+	
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shooter_results_table);
+		
+		// Receive passed Context paramters
+		Intent intent = getIntent();
+		mShooterName = intent.getStringExtra(CommonConstants.ARCHER_NAME);
+		mShooterId   = intent.getIntExtra(CommonConstants.ARCHER_ID, 0);
+		mMatchId     = intent.getIntExtra(CommonConstants.MATCH_ID,0);
+		mRoundNumber = intent.getIntExtra(CommonConstants.ROUND_NUMBER,0);
+		mRoundId     = intent.getIntExtra(CommonConstants.ROUND_ID,0);
+		
+		
+		
 		fillTable();
 	}
 
-	private ArrayList<Passe> getMockPasses()
-	{
-		ArrayList<Passe> passes = new ArrayList<Passe>();
-		
-		// Passe 1
-		Passe passe = new Passe();
-		passe.arrow1 = 10;
-		passe.arrow2 = 8;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 2
-		passe = new Passe();
-		passe.arrow1 = 10;
-		passe.arrow2 = 8;
-		passe.arrow3 = 8;
-		passes.add(passe);
-		
-		// Passe 3
-		passe = new Passe();
-		passe.arrow1 = 10;
-		passe.arrow2 = 9;
-		passe.arrow3 = 9;
-		passes.add(passe);
-		
-		// Passe 4
-		passe = new Passe();
-		passe.arrow1 = 10;
-		passe.arrow2 = 10;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 5
-		passe = new Passe();
-		passe.arrow1 = 10;
-		passe.arrow2 = 9;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 6
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 7;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 7
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 9;
-		passe.arrow3 = 8;
-		passes.add(passe);
-		
-		// Passe 8
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 9;
-		passe.arrow3 = 8;
-		passes.add(passe);
-		
-		// Passe 9
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 8;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 10
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 8;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 11
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 8;
-		passe.arrow3 = 7;
-		passes.add(passe);
-		
-		// Passe 12
-		passe = new Passe();
-		passe.arrow1 = 9;
-		passe.arrow2 = 9;
-		passe.arrow3 = 8;
-		passes.add(passe);
-		
-		return passes;
-	}
+	
 	
 	private void fillTable()
 	{
 		// Setup of Mock-Data
-		String shooterName = "Hans Mustermann";
+		String shooterName = (mShooterName != "")?mShooterName:"Hans Mustermann";
 		String shooterInfo = "SV Schießmichtot";
 		String distance    = "40m";
 		int numberOfPasses = 12;	
@@ -227,5 +159,97 @@ public class ShooterResultsTableActivity extends Activity {
 		}
 		
 	};
+	
+	
+	private ArrayList<Passe> getMockPasses()
+	{
+		ArrayList<Passe> passes = new ArrayList<Passe>();
+		
+		// Passe 1
+		Passe passe = new Passe();
+		passe.arrow1 = 10;
+		passe.arrow2 = 8;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 2
+		passe = new Passe();
+		passe.arrow1 = 10;
+		passe.arrow2 = 8;
+		passe.arrow3 = 8;
+		passes.add(passe);
+		
+		// Passe 3
+		passe = new Passe();
+		passe.arrow1 = 10;
+		passe.arrow2 = 9;
+		passe.arrow3 = 9;
+		passes.add(passe);
+		
+		// Passe 4
+		passe = new Passe();
+		passe.arrow1 = 10;
+		passe.arrow2 = 10;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 5
+		passe = new Passe();
+		passe.arrow1 = 10;
+		passe.arrow2 = 9;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 6
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 7;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 7
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 9;
+		passe.arrow3 = 8;
+		passes.add(passe);
+		
+		// Passe 8
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 9;
+		passe.arrow3 = 8;
+		passes.add(passe);
+		
+		// Passe 9
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 8;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 10
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 8;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 11
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 8;
+		passe.arrow3 = 7;
+		passes.add(passe);
+		
+		// Passe 12
+		passe = new Passe();
+		passe.arrow1 = 9;
+		passe.arrow2 = 9;
+		passe.arrow3 = 8;
+		passes.add(passe);
+		
+		return passes;
+	}
 	
 }

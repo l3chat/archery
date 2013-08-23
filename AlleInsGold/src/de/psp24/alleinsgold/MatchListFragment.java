@@ -102,7 +102,7 @@ public class MatchListFragment extends ListFragment implements
 		// Then start the Activity, passing the Match ID
 		Activity activity = getActivity();
 		Intent intent = new Intent(activity, MatchDetailsActivity.class);
-		intent.putExtra(MatchDetailsActivity.MATCH_ID, matchId);
+		intent.putExtra(CommonConstants.MATCH_ID, matchId);
 		activity.startActivity(intent);
 	}
 

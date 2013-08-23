@@ -28,12 +28,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.TwoLineListItem;
 
 public class RoundFragment extends Fragment {
-	
-	public static final String ROUND_NUMBER = "ROUND_NUMBER";
-	public static final String ROUND_ID     = "ROUND_ID";
-	public static final String MATCH_ID     = "MATCH_ID";
-
-	
+		
 	long mMatchId = 0;
 	int mRoundNo = 0;
 	int mRoundId = 0;
@@ -51,9 +46,9 @@ public class RoundFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Bundle arguments = getArguments();
-		mMatchId = arguments.getLong(MATCH_ID, 0);
-		mRoundNo = arguments.getInt(ROUND_NUMBER, 0);
-		mRoundId = arguments.getInt(ROUND_ID, 0);
+		mMatchId = arguments.getLong(CommonConstants.MATCH_ID, 0);
+		mRoundNo = arguments.getInt(CommonConstants.ROUND_NUMBER, 0);
+		mRoundId = arguments.getInt(CommonConstants.ROUND_ID, 0);
 		
 		changeHeaderText();
 		
@@ -88,7 +83,12 @@ public class RoundFragment extends Fragment {
 				// Then start the Activity, passing the Match ID
 				Activity activity = getActivity();
 				Intent intent = new Intent(activity, ShooterResultsTableActivity.class);
-				//intent.putExtra(MatchDetailsActivity.MATCH_ID, matchId);
+				intent.putExtra(CommonConstants.ARCHER_NAME, ars.archerName);
+				intent.putExtra(CommonConstants.ARCHER_ID, ars.archerId);
+				intent.putExtra(CommonConstants.MATCH_ID, mMatchId);
+				intent.putExtra(CommonConstants.ROUND_NUMBER, mRoundNo);
+				intent.putExtra(CommonConstants.ROUND_ID, mRoundId);
+				
 				activity.startActivity(intent);
 			}
 		});

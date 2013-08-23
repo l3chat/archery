@@ -17,7 +17,6 @@ import android.support.v4.app.NavUtils;
 
 public class MatchDetailsActivity extends FragmentActivity {
 	
-	public final static String MATCH_ID = "de.psp24.alleinsgold.data.tables.Matches.id";
 	private long mCurrentMatchId = 0;
 
 	@Override
@@ -28,7 +27,7 @@ public class MatchDetailsActivity extends FragmentActivity {
 		setupActionBar();
 		
 		Intent intent = getIntent();
-		mCurrentMatchId = intent.getLongExtra(MATCH_ID,0);
+		mCurrentMatchId = intent.getLongExtra(CommonConstants.MATCH_ID,0);
 		
 		//Cursor c = new SchemaHelper(this).getMatch(mCurrentMatchId);
 		//TextView tv = (TextView)findViewById(R.id.txtview_match_id);
@@ -49,9 +48,9 @@ public class MatchDetailsActivity extends FragmentActivity {
 		
 		Fragment roundFragment = new RoundFragment(); 
 		Bundle bundle = new Bundle();
-		bundle.putLong(RoundFragment.MATCH_ID, mCurrentMatchId );
-		bundle.putInt(RoundFragment.ROUND_NUMBER, roundNumber);
-		bundle.putInt(RoundFragment.ROUND_ID, roundId);
+		bundle.putLong(CommonConstants.MATCH_ID, mCurrentMatchId );
+		bundle.putInt(CommonConstants.ROUND_NUMBER, roundNumber);
+		bundle.putInt(CommonConstants.ROUND_ID, roundId);
 		roundFragment.setArguments( bundle );
 		
 		
