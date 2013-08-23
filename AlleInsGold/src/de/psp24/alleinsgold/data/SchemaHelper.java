@@ -294,7 +294,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		
 		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,
 				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
-		Cursor c = sd.query(Rounds.TABLE_NAME, cols, null,
+		Cursor c = sd.query(Matches.TABLE_NAME, cols, null,
 				null, null, null, Matches.DATE);
 		
 		return c;

@@ -26,6 +26,20 @@
             android:name="de.psp24.alleinsgold.ShooterResultsTableActivity"
             android:label="@string/title_activity_shooter_results_table" >
         </activity>
+        <activity
+            android:name="de.psp24.alleinsgold.MatchDetailsActivity"
+            android:label="@string/title_activity_competition_details"
+            android:parentActivityName="de.psp24.alleinsgold.Home" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.psp24.alleinsgold.Home" />
+        </activity>
+
+        <provider
+            android:name="de.psp24.alleinsgold.data.GoldDataProvider"
+            android:authorities="de.psp24.alleinsgold.data.GoldDataProvider"
+            android:multiprocess="true" >
+        </provider>
     </application>
 
 </manifest>

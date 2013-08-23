@@ -1,23 +1,59 @@
 package de.psp24.alleinsgold.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 
 public class GoldDataProvider extends ContentProvider {
+	
+	private static final String AUTHORITY = "de.psp24.alleinsgold.data.GoldDataProvider";
+	public static final int MATCHES   = 100;
+	public static final int MATCH_ID  = 110;
+	public static final int ARCHERS   = 100;
+	public static final int ARCHER_ID = 110;
+	
+	
+	
+	private static final String MATCHES_BASE_PATH = "matches";
+	public static final Uri MATCHES_CONTENT_URI   = Uri.parse("content://" + AUTHORITY + "/" + MATCHES_BASE_PATH);
+	//public static final String CONTENT_ITEM_TYPE  = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/mt-tutorial";
+	//public static final String CONTENT_TYPE       = ContentResolver.CURSOR_DIR_BASE_TYPE  + "/mt-tutorial";
 
+	
+	// Register the Content Provider
+	private static final UriMatcher sURIMatcher = new UriMatcher( UriMatcher.NO_MATCH);
+	static {
+	    sURIMatcher.addURI(AUTHORITY, MATCHES_BASE_PATH,        MATCHES);
+	    sURIMatcher.addURI(AUTHORITY, MATCHES_BASE_PATH + "/#", MATCH_ID);
+	}
+	
+	private SchemaHelper mSchemaHelper;
+	
 	@Override
 	public boolean onCreate() {
-		// TODO Auto-generated method stub
-		return false;
+		mSchemaHelper = new SchemaHelper(getContext());
+		return true;
 	}
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		// TODO Auto-generated method stub
-		return null;
+		Cursor cursor = null;
+		int uriType = sURIMatcher.match(uri);
+	    switch (uriType) {
+	    case MATCH_ID:
+	        cursor =  mSchemaHelper.getMatches();
+	        break;
+	    case MATCHES:
+	        cursor = mSchemaHelper.getMatches();
+	        break;
+	    default:
+	        throw new IllegalArgumentException("Unknown URI");
+	    }
+	    return cursor;
 	}
 
 	@Override

@@ -125,14 +125,24 @@ public class Home extends FragmentActivity implements ActionBar.TabListener {
 
 		@Override
 		public Fragment getItem(int position) {
+			Fragment fragment = null;
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new TabFragment();
-			Bundle args = new Bundle();
-			args.putInt(TabFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			return fragment;
+			if( position == 1)
+			{
+				fragment = new MatchListFragment();
+				return fragment;
+			}
+			else
+			{
+				fragment = new TabFragment();
+				Bundle args = new Bundle();
+				args.putInt(TabFragment.ARG_SECTION_NUMBER, position + 1);
+				fragment.setArguments(args);
+				return fragment;
+			}
+			
 		}
 
 		@Override
