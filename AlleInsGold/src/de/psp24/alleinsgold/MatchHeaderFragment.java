@@ -43,6 +43,8 @@ public class MatchHeaderFragment extends Fragment {
 		tv.setText( dateString );
 		tv = (TextView)getView().findViewById(R.id.tv_distance_value);
 		tv.setText(c.getString(c.getColumnIndex(Matches.DISTANCE)));
+		tv = (TextView)getView().findViewById(R.id.tv_numberOfRounds_value);
+		tv.setText(c.getString(c.getColumnIndex(Matches.N_ROUNDS)));
 	}
 	
 }
