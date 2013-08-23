@@ -9,9 +9,14 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -80,6 +85,9 @@ public class MatchListFragment extends ListFragment implements
 		// Prepare the loader. Either re-connect with an existing one,
 		// or start a new one.
 		getLoaderManager().initLoader(MATCHES_LOADER, null, (LoaderCallbacks<Cursor>) this);
+		
+		// create context menu for matches
+		registerForContextMenu(getListView());
 	}
 
 	@Override
@@ -118,5 +126,23 @@ public class MatchListFragment extends ListFragment implements
 		// longer using it.
 		mAdapter.swapCursor(null);
 	}
+	
+	
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	if (v.getId() == android.R.id.list) {
+    		menu.add(Menu.NONE, 0, 0, "Remove"); //TODO : load from resources
+    	}
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+    	int menuItemIndex = item.getItemId();
+    	if(menuItemIndex == 0){
+    	}
+    	return true;
+    }
+
 
 }
