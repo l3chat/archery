@@ -368,7 +368,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	 * @param matchId
 	 * @return
 	 */
-	public Cursor getMatch(int matchId){
+	public Cursor getMatch(long matchId){
 		SQLiteDatabase sd = getReadableDatabase();
 		
 		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,

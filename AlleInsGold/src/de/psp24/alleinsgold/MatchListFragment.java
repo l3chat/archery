@@ -19,6 +19,8 @@ import android.support.v4.widget.CursorAdapter;
 
 public class MatchListFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
+	
+	private static final int MATCHES_LOADER = 0;
 
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
@@ -52,14 +54,18 @@ public class MatchListFragment extends ListFragment implements
 
 		// Prepare the loader. Either re-connect with an existing one,
 		// or start a new one.
-		getLoaderManager().initLoader(0, null, (LoaderCallbacks<Cursor>) this);
+		getLoaderManager().initLoader(MATCHES_LOADER, null, (LoaderCallbacks<Cursor>) this);
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		// Find out the ID of the Match
+		Cursor c = (Cursor)mAdapter.getItem(position);
+		long matchId = c.getLong(c.getColumnIndex(Matches.ID));
+		// Then start the Activity, passing the Match ID
 		Activity activity = getActivity();
 		Intent intent = new Intent(activity, MatchDetailsActivity.class);
-		intent.putExtra(MatchDetailsActivity.MATCH_ID, id);
+		intent.putExtra(MatchDetailsActivity.MATCH_ID, matchId);
 		activity.startActivity(intent);
 	}
 
