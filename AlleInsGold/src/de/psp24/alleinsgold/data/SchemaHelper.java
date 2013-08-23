@@ -39,10 +39,11 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				+ Matches.DATE + " INTEGER, "	// seconds since epoc; 
 									// see http://www.sqlite.org/datatype3.html, 
 									// http://www.sqlite.org/lang_datefunc.html
-				+ Matches.DISTANCE + " INTEGER, " // in meters
-				+ Matches.N_ROUNDS + " INTEGER, " // 1 or 2
-				+ Matches.N_PASSES + " INTEGER, " // 10 or 12
-				+ Matches.N_ARROWS + " INTEGER);" // 3 or 6
+				+ Matches.DISTANCE + " INTEGER, " 	// in meters
+				+ Matches.N_ROUNDS + " INTEGER, " 	// 1 or 2
+				+ Matches.N_PASSES + " INTEGER, " 	// 10 or 12
+				+ Matches.N_ARROWS + " INTEGER);" 	// 3 or 6
+				+ Matches.NAME + " TEXT);" 			// match name
 				);
 		
 		// create rounds table
@@ -122,13 +123,14 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	}
 
 	
-	private long addMatch(Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+	private long addMatch(String matchName, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
 		ContentValues cv = new ContentValues();
 		cv.put(Matches.DATE, datetime.getTimeInMillis() / 1000); // need seconds, not milliseconds
 		cv.put(Matches.DISTANCE, distance);
 		cv.put(Matches.N_ROUNDS, n_rounds);
 		cv.put(Matches.N_PASSES, n_passes);
 		cv.put(Matches.N_ARROWS, n_arrows);
+		cv.put(Matches.NAME, matchName);
 		
 		SQLiteDatabase sd = getWritableDatabase();
 		
@@ -215,7 +217,7 @@ public class SchemaHelper extends SQLiteOpenHelper {
 //
 //		long matchId = createEmptyMatch(archers, Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
 
-		long matchId = createEmptyMatch(Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
+		long matchId = createEmptyMatch("Yoda wins", Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
 
 		// create and assign archers
 		long archerId = addArcher("Bill", "Gates");
@@ -244,8 +246,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 	
 
 	//TODO make it transactional!!!!!
-	public long createEmptyMatch(ArrayList<Long> archers, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
-		long matchId = createEmptyMatch(datetime, distance, n_rounds, n_passes, n_arrows);
+	public long createEmptyMatch(ArrayList<Long> archers, String matchName, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+		long matchId = createEmptyMatch(matchName, datetime, distance, n_rounds, n_passes, n_arrows);
 
 		boolean success = true;
 		for(long archerId : archers){
@@ -263,8 +265,8 @@ public class SchemaHelper extends SQLiteOpenHelper {
 
 	
 	
-	public long createEmptyMatch(Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
-		long matchId = addMatch(datetime, distance, n_rounds, n_passes, n_arrows);
+	public long createEmptyMatch(String matchName, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+		long matchId = addMatch(matchName, datetime, distance, n_rounds, n_passes, n_arrows);
 		return matchId;
 	}
 	
