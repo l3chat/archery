@@ -1,5 +1,7 @@
 package de.psp24.alleinsgold.data;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -205,46 +207,106 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		int nPasses = 12;
 		int nArrows = 3;
 		
-		// create archers
-		ArrayList<Long> archers = new ArrayList<Long>();
-		archers.add(addArcher("Bill", "Gates"));
-		archers.add(addArcher("Peter", "Higgs"));
-		archers.add(addArcher("Master", "Yoda"));
+//		// create archers
+//		ArrayList<Long> archers = new ArrayList<Long>();
+//		archers.add(addArcher("Bill", "Gates"));
+//		archers.add(addArcher("Peter", "Higgs"));
+//		archers.add(addArcher("Master", "Yoda"));
+//
+//		long matchId = createEmptyMatch(archers, Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
 
-		long matchId = createEmptyMatch(archers, Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
+		long matchId = createEmptyMatch(Calendar.getInstance(), distance, nRounds, nPasses, nArrows);
+
+		// create and assign archers
+		long archerId = addArcher("Bill", "Gates");
+		boolean success = addArcherToMatch((int)archerId, (int)matchId);
+		if(!success){
+			removeMatch((int) matchId);
+			return -1;
+		}
 		
+		archerId = addArcher("Peter", "Higgs");
+		success = addArcherToMatch((int)archerId, (int)matchId);
+		if(!success){
+			removeMatch((int) matchId);
+			return -1;
+		}
+		
+		archerId = addArcher("Master", "Yoda");
+		success = addArcherToMatch((int)archerId, (int)matchId);
+		if(!success){
+			removeMatch((int) matchId);
+			return -1;
+		}
+
 		return matchId;
 	}
 	
 
 	//TODO make it transactional!!!!!
 	public long createEmptyMatch(ArrayList<Long> archers, Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
-		long matchId = addMatch(Calendar.getInstance(), distance, n_rounds, n_passes, n_arrows);
+		long matchId = createEmptyMatch(datetime, distance, n_rounds, n_passes, n_arrows);
 
-		long roundId, passeId;
+		boolean success = true;
+		for(long archerId : archers){
+			// assign archer
+			success = addArcherToMatch((int) archerId, (int) matchId);
+			if(!success){
+				removeMatch((int)matchId);
+				matchId = -1;
+				break;
+			}
+		}
+		
+		return matchId;
+	}
+
+	
+	
+	public long createEmptyMatch(Calendar datetime, int distance, int n_rounds, int n_passes, int n_arrows){
+		long matchId = addMatch(datetime, distance, n_rounds, n_passes, n_arrows);
+		return matchId;
+	}
+	
+	
+	public boolean addArcherToMatch(int archerId, int matchId){
+		boolean result = true;
+		
+		int n_rounds=0, n_passes=0, n_arrows=0;
+		Cursor c = getMatch(matchId);
+		if(c.moveToFirst()){
+			n_rounds = c.getInt(c.getColumnIndex(Matches.N_ROUNDS));
+			n_passes = c.getInt(c.getColumnIndex(Matches.N_PASSES));
+			n_arrows = c.getInt(c.getColumnIndex(Matches.N_ARROWS));
+		} else {
+			result = false;
+			return result;
+		}
+		c.close();
+		
+		assignArcher(archerId, matchId);
+		
+		long roundId, passeId, arrowId;
 		for(int i=0; i<n_rounds; i++){
 			// create round
 			roundId = addRound((int)matchId, i+1);
 				
-			for(long archerId : archers){
-				// assign archer
-				assignArcher((int) archerId, (int) matchId);
 
-				// create passes
-				for(int j=0; j<n_passes; j++){
-					passeId = addPass((int) archerId, (int) roundId, j+1);
-					
-					// create arrows
-					for(int k=0; k<n_arrows; k++){
-						addArrow((int)passeId, k+1, "0", (int) matchId); // returned arrowId is not used here
-					}
+			// create passes
+			for(int j=0; j<n_passes; j++){
+				passeId = addPass((int) archerId, (int) roundId, j+1);
+				
+				// create arrows
+				for(int k=0; k<n_arrows; k++){
+					arrowId = addArrow((int)passeId, k+1, "0", (int) matchId);
+					result &= (arrowId>0);
 				}
 			}
 		}
-
-		return matchId;
+		
+		return result;
 	}
-	
+
 	
 //	public Long[] getAllArrowIds(long archerId, long matchId){
 //		ArrayList<Long> arrows = new ArrayList<Long>();
@@ -296,6 +358,24 @@ public class SchemaHelper extends SQLiteOpenHelper {
 				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
 		Cursor c = sd.query(Matches.TABLE_NAME, cols, null,
 				null, null, null, Matches.DATE);
+		
+		return c;
+	}
+	
+	
+	/**
+	 * Gets a Cursor pointing to a match with specified matchId
+	 * @param matchId
+	 * @return
+	 */
+	public Cursor getMatch(int matchId){
+		SQLiteDatabase sd = getReadableDatabase();
+		
+		String[] cols = new String[]{Matches.ID, Matches.DATE, Matches.DISTANCE,
+				Matches.N_ROUNDS, Matches.N_PASSES, Matches.N_ARROWS};
+		String[] selectionArgs = new String[]{String.valueOf(matchId)};
+		Cursor c = sd.query(Matches.TABLE_NAME, cols, Matches.ID + " = ?",
+				selectionArgs, null, null, Matches.DATE);
 		
 		return c;
 	}
@@ -482,6 +562,19 @@ public class SchemaHelper extends SQLiteOpenHelper {
 		c.close();
 		
 		return arrowIds;
+	}
+	
+	
+	public static Calendar getCalendar(int secondsSinceEpoc){
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(secondsSinceEpoc * 1000); // need milliseconds
+		return cal;
+	}
+	
+	
+	public static String sprintCalendar(Calendar cal){
+		SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		return df.format(cal.getTime());
 	}
 
 }
