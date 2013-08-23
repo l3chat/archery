@@ -45,7 +45,8 @@ public class GoldDataProvider extends ContentProvider {
 		int uriType = sURIMatcher.match(uri);
 	    switch (uriType) {
 	    case MATCH_ID:
-	        cursor =  mSchemaHelper.getMatches();
+	    	String matchId = uri.getLastPathSegment();
+	        cursor =  mSchemaHelper.getMatch(Long.parseLong(matchId));
 	        break;
 	    case MATCHES:
 	        cursor = mSchemaHelper.getMatches();
